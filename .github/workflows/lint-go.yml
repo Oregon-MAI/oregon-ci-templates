@@ -1,0 +1,43 @@
+name: Lint Go
+
+on:
+  workflow_call:
+    inputs:
+      go-version:
+        description: "Version of Go"
+        required: false
+        type: string
+        default: "1.26"
+      working-directory:
+        description: "Working directory for lint"
+        required: false
+        type: string
+        default: "."
+      fail-on-error:
+        description: "Fail pipeline on lint errors"
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v5
+
+    - name: Setup go
+      uses: actions/setup-go@v5
+      with:
+        go-version: ${{ inputs.go-version }}
+        cache: true
+
+    - name: Run golangci-lint
+      id: lint-step
+      continue-on-error: ${{ !inputs.fail-on-error }}
+      uses: golangci/golangci-lint-action@v6
+      with:
+      working-directory: ${{ inputs.working-directory }}
+      args: --timeout=5m
+      verbose: true
+      github-token: ${{ secrets.GITHUB_TOKEN }}
