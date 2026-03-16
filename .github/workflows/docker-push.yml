@@ -11,7 +11,7 @@ on:
       platforms:
         required: false
         type: string
-        default: "linux/amd64"
+        default: "linux/amd64,linux/arm64"
         description: "Platform arch"
 
 env:
@@ -60,3 +60,4 @@ jobs:
           platforms: ${{ inputs.platforms }}
           cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache
           cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:buildcache,mode=max
+          provenance: false
